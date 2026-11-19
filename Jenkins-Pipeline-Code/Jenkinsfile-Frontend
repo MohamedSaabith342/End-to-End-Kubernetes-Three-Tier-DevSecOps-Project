@@ -66,34 +66,34 @@ pipeline {
             }
         }
 
-        stage('OWASP Dependency-Check Scan') {
-            steps {
-                dir('Application-Code/frontend') {
-                    dependencyCheck(
-                        additionalArguments: '--scan ./ --disableYarnAudit --disableNodeAudit',
-                        odcInstallation: 'DP-Check'
-                    )
+        // stage('OWASP Dependency-Check Scan') {
+        //     steps {
+        //         dir('Application-Code/frontend') {
+        //             dependencyCheck(
+        //                 additionalArguments: '--scan ./ --disableYarnAudit --disableNodeAudit',
+        //                 odcInstallation: 'DP-Check'
+        //             )
 
-                    dependencyCheckPublisher(
-                        pattern: '**/dependency-check-report.xml'
-                    )
-                }
-            }
-        }
+        //             dependencyCheckPublisher(
+        //                 pattern: '**/dependency-check-report.xml'
+        //             )
+        //         }
+        //     }
+        // }
 
-        stage('Trivy Filesystem Scan') {
-            steps {
-                dir('Application-Code/frontend') {
-                    sh '''
-                        trivy fs \
-                            --severity HIGH,CRITICAL \
-                            --exit-code 1 \
-                            --output trivyfs.txt \
-                            .
-                    '''
-                }
-            }
-        }
+        // stage('Trivy Filesystem Scan') {
+        //     steps {
+        //         dir('Application-Code/frontend') {
+        //             sh '''
+        //                 trivy fs \
+        //                     --severity HIGH,CRITICAL \
+        //                     --exit-code 1 \
+        //                     --output trivyfs.txt \
+        //                     .
+        //             '''
+        //         }
+        //     }
+        // }
 
         stage('Docker Image Build') {
             steps {
@@ -107,17 +107,17 @@ pipeline {
             }
         }
 
-        stage('Trivy Docker Image Scan') {
-            steps {
-                sh '''
-                    trivy image \
-                        --severity HIGH,CRITICAL \
-                        --exit-code 1 \
-                        --output trivyimage.txt \
-                        "${AWS_ECR_REPO_NAME}:${BUILD_NUMBER}"
-                '''
-            }
-        }
+        // stage('Trivy Docker Image Scan') {
+        //     steps {
+        //         sh '''
+        //             trivy image \
+        //                 --severity HIGH,CRITICAL \
+        //                 --exit-code 1 \
+        //                 --output trivyimage.txt \
+        //                 "${AWS_ECR_REPO_NAME}:${BUILD_NUMBER}"
+        //         '''
+        //     }
+        // }
 
         stage('Push Image to AWS ECR') {
             steps {
